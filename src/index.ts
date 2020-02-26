@@ -1,33 +1,18 @@
 
 const perPage = 99
 
-interface WPErrorResponse {
-  code: string
-}
-
-interface KVP { [key: string]: any }
-type WPDataResponse = KVP[]
-
-interface Response {
-  json: () => WPErrorResponse | WPDataResponse[]
-  headers: {
-    get: (header: string) => string
-  },
-  ok: boolean
-}
-
 export type FetchCallback = (options: { query: { page: number, per_page: number } }) => Promise<Response>
 
 const fetchPage = async (startingPage: number, fetchCallback: FetchCallback) => {
   const response = await fetchCallback({ query: { page: startingPage, per_page: perPage } })
   const data = await response.json()
   const total = +`${response.headers.get('X-WP-TotalPages')}`
-  if (!response.ok && (data as WPErrorResponse).code === 'rest_post_invalid_page_number') {
+  if (!response.ok && data.code === 'rest_post_invalid_page_number') {
     return { total, pages: [] }
   } else if (!response.ok) {
     throw data
   } else {
-    return { total, pages: (data as WPDataResponse) }
+    return { total, pages: data }
   }
 }
 
@@ -35,7 +20,7 @@ export type FetchAllPagesOptions = {
   createUrlCallback: FetchCallback
 }
 
-export default async ({ createUrlCallback }: FetchAllPagesOptions) => {
+export const fetchAllPages = async ({ createUrlCallback }: FetchAllPagesOptions) => {
   const collection = []
   let counter = 1
 

@@ -1,14 +1,22 @@
 {
   "name": "wp-fetch-pages",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fetches wordpress pages recursively.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "tsc --watch",
+    "test": "jest"
   },
   "author": "Sem Postma",
   "license": "MIT",
   "devDependencies": {
+    "isomorphic-fetch": "^2.2.1",
+    "jest": "^25.1.0",
     "tslint": "^6.0.0",
     "typescript": "^3.8.2"
   }
